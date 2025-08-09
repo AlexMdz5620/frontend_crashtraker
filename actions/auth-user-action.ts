@@ -2,6 +2,7 @@
 
 import { ErrorResponseSchema, LoginSchema } from "@/src/schemas";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 type ActionStateType = {
     errors: string[]
@@ -50,7 +51,5 @@ export async function auth(prevState: ActionStateType, formData: FormData) {
         path: '/'
     });
 
-    return {
-        errors: []
-    }
+    redirect('/admin');
 }
