@@ -3,7 +3,7 @@ import { DialogTitle } from "@headlessui/react"
 import { useFormState } from "react-dom"
 import { deleteBudget } from "@/actions/deleted-budget-action"
 import ErrorMessage from "../ui/ErrorMessage"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { toast } from "react-toastify"
 
 export default function ConfirmPasswordForm() {
@@ -11,6 +11,12 @@ export default function ConfirmPasswordForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const budgetId = +searchParams.get('deleteBudgetId')!;
+
+    const closeModal = useCallback(() => {
+        const hideModal = new URLSearchParams(searchParams.toString())
+        hideModal.delete('deleteBudgetId')
+        router.replace(`${pathname}?${hideModal}`)
+    }, [pathname, router, searchParams]);
 
     const deleteBudgetWhitPass = deleteBudget.bind(null, budgetId);
     const [state, dispatch] = useFormState(deleteBudgetWhitPass, {
@@ -23,13 +29,7 @@ export default function ConfirmPasswordForm() {
             toast.success(state.success);
             closeModal();
         }
-    }, [state]);
-
-    const closeModal = () => {
-        const hideModal = new URLSearchParams(searchParams.toString())
-        hideModal.delete('deleteBudgetId')
-        router.replace(`${pathname}?${hideModal}`)
-    }
+    }, [state, closeModal]);
 
     return (
         <>
